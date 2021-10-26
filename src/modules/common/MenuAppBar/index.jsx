@@ -1,6 +1,6 @@
 import React from 'react';
 import { AppBar, Toolbar, Typography } from '@material-ui/core';
-import logo from 'UI/assets/images/yopett.png'
+import logo from '../../../assets/images/yopett.png'
 
 const MenuAppBar = () => {
   return (
