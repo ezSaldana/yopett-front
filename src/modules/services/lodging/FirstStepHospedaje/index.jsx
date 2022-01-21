@@ -1,4 +1,4 @@
-import { React, memo, useState } from 'react';
+import { React, memo, useState, useEffect } from 'react';
 import {
     Box,
     Stepper,
@@ -12,6 +12,7 @@ import {
     Tooltip,
     IconButton,
 } from '@mui/material';
+import { DateRangePickerComponent } from '@syncfusion/ej2-react-calendars'
 
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
@@ -19,11 +20,10 @@ import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import ToolTip from '../../../../assets/icons/ToolTip';
 import Add from '../../../../assets/icons/Add';
 import Reduce from '../../../../assets/icons/Reduce';
-import Calendar from '../../../../assets/icons/Calendar';
 
 import { StylesProvider } from '@mui/styles';
-import '../../../../assets/fonts/fonts.css'
 import { useStyles } from './styles'
+import './styles.css'
 
 const FirstStepBody = () => {
     const classes = useStyles();
@@ -33,6 +33,30 @@ const FirstStepBody = () => {
 Praesent non nunc mollis, fermentum neque at, semper arcu.
 Nullam eget est sed sem iaculis gravida eget vitae justo.
     `;
+
+    const [rangeDate, setRangeDate] = useState({
+        startDate: null,
+        endDate: null,
+        daySpan: 0
+    });
+
+    const [petCounter, setPetCounter] = useState(0);
+
+    const handleClickAddPet = () => {
+        setPetCounter(petCounter + 1);
+    }
+
+    const handleClickReducePet = () => {
+        if(petCounter === 0) {
+            setPetCounter(0);
+        } else {
+            setPetCounter(petCounter - 1);
+        }
+    }
+
+    useEffect(() => {
+        console.log(rangeDate);
+    },[rangeDate]);
 
     // Para el estepper modificar .MuiSvgIcon-root-MuiStepIcon-root y MuiSvgIcon-root-MuiStepIcon-root.Mui-completed
     return (
@@ -57,7 +81,19 @@ Nullam eget est sed sem iaculis gravida eget vitae justo.
                     Selecciona la fecha de entrada y salida de tú mascota.
                 </Typography>
                 <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-                    <TextField className={classes.txtFld} type='date' label="Entrada - Salida" variant="outlined" />
+                    <DateRangePickerComponent
+                        placeholder="Entrada - Salida"
+                        format="dd MMMM yyyy"
+                        startDate={rangeDate.startDate}
+                        endDate={rangeDate.endDate}
+                        change={(e) => {
+                            setRangeDate({
+                                startDate: e.startDate,
+                                endDate: e.endDate,
+                                daySpan: e.daySpan
+                            });
+                        }}
+                    />
                     <TextField className={classes.txtFld} required label="Ubicación" variant="outlined" />
                 </Box>
                 <Box sx={{ display: 'flex', flexDirection: 'row' }}>
@@ -78,15 +114,15 @@ Nullam eget est sed sem iaculis gravida eget vitae justo.
                             </Typography>
                         </Box>
                         <Box className={classes.incrementButtonGroup}>
-                            <Button className={classes.counterButtons} variant="text">
+                            <Button className={classes.counterButtons} onClick={handleClickReducePet} variant="text">
                                 <Reduce />
                             </Button>
                             <Box className={classes.incrementText}>
                                 <Typography className={[classes.dosisBold, classes.counter]}>
-                                    0
+                                    {petCounter}
                                 </Typography>
                             </Box>
-                            <Button className={classes.counterButtons} variant="text">
+                            <Button className={classes.counterButtons} onClick={handleClickAddPet} variant="text">
                                 <Add />
                             </Button>
                         </Box>
