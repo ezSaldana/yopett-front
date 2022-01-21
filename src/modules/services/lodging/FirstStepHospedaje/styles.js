@@ -156,7 +156,7 @@ export const useStyles = makeStyles(() => ({
         flexDirection: 'Row',
         padding: '16px',
     },
-    '':{},
+    '': {},
     pricingHelperText: {
         display: 'flex',
         flexDirection: 'row',
