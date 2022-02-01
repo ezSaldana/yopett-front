@@ -81,7 +81,6 @@ export const useStyles = makeStyles(() => ({
         background: '#FFFFFF',
         opacity: 0.8,
         padding: '10px 32px',
-
     },
     btnGrpActive: {
         width: 256,
@@ -145,7 +144,7 @@ export const useStyles = makeStyles(() => ({
         }
     },
     pricing: {
-        height: '216px',
+        height: 'auto',
         width: '504px',
         border: 'solid 1px #54A6AF',
         borderRadius: '4px',
@@ -156,7 +155,6 @@ export const useStyles = makeStyles(() => ({
         flexDirection: 'Row',
         padding: '16px',
     },
-    '': {},
     pricingHelperText: {
         display: 'flex',
         flexDirection: 'row',
@@ -198,6 +196,52 @@ export const useStyles = makeStyles(() => ({
         '&.MuiTypography-root': {
             fontSize: 'x-large',
             color: '#DC185B'
+        }
+    },
+    pricingText: {
+        paddingInline: '16px',
+        textAlign: 'start',
+        '&.MuiTypography-root': {
+            fontSize: '12px',
+            color: '#DB3669',
+            lineHeight: '16px',
+        }
+    },
+    pricingBox: {
+        width: '100px',
+        height: '32px',
+        marginInline: '16px',
+        '&.MuiBox-root': {
+            backgroundColor: '#EBDDE3',
+            borderRadius: '4px',
+        }
+    },
+    pricingBoxText: {
+        paddingInline: '8px',
+        textAlign: 'start',
+        '&.MuiTypography-root': {
+            fontSize: '20px',
+            color: '#1C656B',
+        }
+    },
+    totalPricingBox: {
+        '&.MuiBox-root': {
+            backgroundColor: '#EBDDE3',
+            borderRadius: '0px 0px 4px 4px'
+        }
+    },
+    totalPricingBoxDefault: {
+        '&.MuiBox-root': {
+            borderTop: '1px solid #EBDDE3',
+            borderRadius: '0px 0px 4px 4px'
+        }
+    },
+    totalPricingBoxText: {
+        textAlign: 'center',
+        paddingBlock: '12px',
+        '&.MuiTypography-root': {
+            fontSize: '16px',
+            color: '#CE3F6A',
         }
     }
 }));

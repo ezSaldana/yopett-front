@@ -1,9 +1,6 @@
-import { React, memo, useState, useEffect } from 'react';
+import { React, useState, useEffect } from 'react';
 import {
     Box,
-    Stepper,
-    Step,
-    StepLabel,
     Button,
     ButtonGroup,
     Typography,
@@ -12,10 +9,7 @@ import {
     Tooltip,
     IconButton,
 } from '@mui/material';
-import { DateRangePickerComponent } from '@syncfusion/ej2-react-calendars'
-
-import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
-import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
+import { DateRangePickerComponent } from '@syncfusion/ej2-react-calendars';
 
 import ToolTip from '../../../../assets/icons/ToolTip';
 import Add from '../../../../assets/icons/Add';
@@ -25,7 +19,7 @@ import { StylesProvider } from '@mui/styles';
 import { useStyles } from './styles'
 import './styles.css'
 
-const FirstStepBody = () => {
+const FirstStep = () => {
     const classes = useStyles();
 
     const tooltipText = `
@@ -37,26 +31,60 @@ Nullam eget est sed sem iaculis gravida eget vitae justo.
     const [rangeDate, setRangeDate] = useState({
         startDate: null,
         endDate: null,
-        daySpan: 0
+        daySpan: null
     });
 
     const [petCounter, setPetCounter] = useState(0);
+    const [total, setTotal] = useState(0);
+    const [descuento, setDescuento] = useState(0);
+    const [totalFinal, setTotalFinal] = useState(0);
+    const tarifaPorPerro = 100;
 
     const handleClickAddPet = () => {
         setPetCounter(petCounter + 1);
+        if (petCounter > 1)
+            calcDescuento('agregarDescuento');
     }
 
+    // TODO: calcular descuento correctamente
     const handleClickReducePet = () => {
-        if(petCounter === 0) {
+        if (petCounter === 0) {
             setPetCounter(0);
         } else {
             setPetCounter(petCounter - 1);
+            if (petCounter > 1)
+                calcDescuento('reducirDescuento');
         }
     }
 
+    const calcDescuento = (operacion) => {
+        switch (operacion) {
+            case 'agregarDescuento':
+                setDescuento(descuento + (tarifaPorPerro * .5));
+                break;
+            case 'reducirDescuento':
+                setDescuento(descuento - (tarifaPorPerro * .5));
+                break;
+            default:
+                break;
+        }
+    }
+
+    const calcTotalFinal = () => {
+        if (petCounter === 0)
+            setTotalFinal(0);
+        else
+            setTotalFinal(total - descuento);
+    }
+
     useEffect(() => {
-        console.log(rangeDate);
-    },[rangeDate]);
+        setTotal(tarifaPorPerro * petCounter);
+        calcTotalFinal();
+    }, [petCounter]);
+
+    useEffect(() => {
+
+    }, []);
 
     // Para el estepper modificar .MuiSvgIcon-root-MuiStepIcon-root y MuiSvgIcon-root-MuiStepIcon-root.Mui-completed
     return (
@@ -126,9 +154,55 @@ Nullam eget est sed sem iaculis gravida eget vitae justo.
                                 <Add />
                             </Button>
                         </Box>
-                        <Box >
-
+                    </Box>
+                    <Box sx={{ display: 'grid', gridTemplateRows: 'repeat(3, 1fr)' }}>
+                        <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)' }}>
+                            <Typography variant="caption" className={[classes.dosisSemiBold, classes.pricingText]}>Total días seleccionados de hospedaje</Typography>
+                            <Typography variant="caption" className={[classes.dosisSemiBold, classes.pricingText]}>Tarifa por noche Por perro</Typography>
+                            <Typography variant="caption" className={[classes.dosisSemiBold, classes.pricingText]}>Total</Typography>
+                            <Typography variant="caption" className={[classes.dosisSemiBold, classes.pricingText]}>Descuento por perro(s)extra</Typography>
                         </Box>
+                        <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', marginBlock: '8px' }}>
+                            {
+                                rangeDate.daySpan === null
+                                    ? (<Box></Box>)
+                                    : (<Box className={classes.pricingBox}>
+                                        <Typography className={[classes.dosisSemiBold, classes.pricingBoxText, classes.pricingBox]}>{rangeDate.daySpan} días</Typography>
+                                    </Box>)
+                            }
+                            <Box>
+                                <Typography className={[classes.dosisSemiBold, classes.pricingBoxText, classes.pricingBox]}>$ {tarifaPorPerro}</Typography>
+                            </Box>
+                            {
+                                petCounter === 0
+                                    ? (<Box></Box>)
+                                    : (
+                                        <Box className={classes.pricingBox}>
+                                            <Typography className={[classes.dosisSemiBold, classes.pricingBoxText, classes.pricingBox]}>$ {total}</Typography>
+                                        </Box>
+                                    )
+                            }
+                            {
+                                petCounter > 1
+                                    ? (
+                                        <Box className={classes.pricingBox}>
+                                            <Typography className={[classes.dosisSemiBold, classes.pricingBoxText, classes.pricingBox]}>$ {descuento}</Typography>
+                                        </Box>
+                                    )
+                                    : (<Box></Box>)
+                            }
+                        </Box>
+                        {
+                            totalFinal === 0
+                                ? (<Box className={classes.totalPricingBoxDefault}>
+                                    <Typography className={[classes.dosisBold, classes.totalPricingBoxText]}>Total Final:</Typography>
+                                </Box>)
+                                : (
+                                    <Box className={classes.totalPricingBox}>
+                                        <Typography className={[classes.dosisBold, classes.totalPricingBoxText]}>Total Final: ${totalFinal}</Typography>
+                                    </Box>
+                                )
+                        }
                     </Box>
                 </Box>
             </Box>
@@ -136,56 +210,4 @@ Nullam eget est sed sem iaculis gravida eget vitae justo.
     );
 }
 
-const FirstStepHospedaje = () => {
-    const classes = useStyles();
-
-    const [activeStep, setActiveStep] = useState(1);
-
-    const handleNext = () => {
-        setActiveStep((prevActiveStep) => prevActiveStep + 1);
-    };
-
-    const handleBack = () => {
-        setActiveStep((prevActiveStep) => prevActiveStep - 1);
-    };
-
-    return (
-        <StylesProvider injectFirst>
-            <Box className={classes.container}>
-                <Stepper activeStep={activeStep}>
-                    <Step>
-                        <StepLabel
-                            sx={{ fontFamily: 'Dosis', fontWeight: 800 }}>
-                        </StepLabel>
-                    </Step>
-                </Stepper>
-                <Box>
-                    <FirstStepBody />
-                </Box>
-                <Box className={classes.stepperControls}>
-                    <Button
-                        className={classes.stepperBackButton}
-                        variant="outlined"
-                        disabled={activeStep === 0}
-                        onClick={handleBack}
-                        startIcon={<ArrowBackIosIcon />}>
-                        <Typography sx={{ fontFamily: 'Dosis', fontWeight: 600 }}>
-                            Atrás
-                        </Typography>
-                    </Button>
-                    <Button
-                        className={classes.stepperNextButton}
-                        variant="contained"
-                        endIcon={<ArrowForwardIosIcon />}
-                        onClick={handleNext}>
-                        <Typography sx={{ fontFamily: 'Dosis', fontWeight: 600 }}>
-                            {activeStep === 3 - 1 ? 'Buscar Cuidador' : 'Continuar'}
-                        </Typography>
-                    </Button>
-                </Box>
-            </Box >
-        </StylesProvider>
-    );
-}
-
-export default memo(FirstStepHospedaje);
+export default FirstStep;
